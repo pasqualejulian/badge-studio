@@ -14,3 +14,7 @@
 @media(prefers-reduced-motion:reduce){.floating-mode .workspace{transition:none}}
 
 @media(min-width:761px){.studio.floating-mode.show-general{grid-template-columns:320px minmax(0,1fr)}.floating-mode.show-general>.panel{position:static;grid-column:1;grid-row:2;width:auto;box-shadow:none}.floating-mode.show-general>.workspace{grid-column:2}}
+
+/* Both states use two tracks so opening and closing interpolate continuously. */
+@media(min-width:761px){.floating-mode .workspace{grid-template-columns:minmax(0,1fr) 0px;transition:grid-template-columns 450ms cubic-bezier(.22,1,.36,1)}.floating-mode.has-selection .workspace{grid-template-columns:minmax(0,1fr) 316px}}
+@media(prefers-reduced-motion:reduce){.floating-mode .workspace{transition:none}}

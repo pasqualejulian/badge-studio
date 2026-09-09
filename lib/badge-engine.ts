@@ -6,14 +6,16 @@ import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { parseRelief, bendGeometry, type ReliefLayer, type ReliefPart } from './relief';
 import { SurfaceLibrary, type Surface } from './surfaces';
 import {parseBaseSVG} from './base-shape';
-import {safeFrameDistance} from './framing';
+import {badgeFrame} from './framing';
 import { MotionPreview } from './motion-preview';
 import { pickBadge, isSelectionGesture, surfaceUV, type BadgePick } from './interaction';
 export type { BadgePick } from './interaction';
 export type { ReliefLayer } from './relief';
 export interface BadgeSettings {faceTextureStrength:number;frameMetal:'gold'|'silver'|'black';frameSurface:Surface;frameRoughness:number;frameTextureStrength:number;surface:Surface;faceSurface:Surface;textureStrength:number;faceRoughness:number;motionBlur:number;curvature:number;relief:number;metal:'gold'|'silver'|'black';thickness:number;rim:number;roughness:number;face:string;scale:number;x:number;y:number;rotation:number;light:number;title:string;number:string}
 export class BadgeEngine {
+  private hasFramed=false;
   private cameraTween:{start:number;from:THREE.Vector3;to:THREE.Vector3;targetFrom:THREE.Vector3;targetTo:THREE.Vector3}|null=null;
+  private cancelCamera=()=>{this.cameraTween=null;};
   onSelect?: (pick:BadgePick|null)=>void;
   private selected:BadgePick|null=null; private selectionOutline=new THREE.Group(); private outlineMaterial=new THREE.LineBasicMaterial({color:'#e5f76c',transparent:true,opacity:.9,depthTest:false});
   private down:{x:number;y:number}|null=null; private pointers=new Set<number>();
@@ -35,7 +37,7 @@ export class BadgeEngine {
     this.renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});this.renderer.setPixelRatio(Math.min(devicePixelRatio,2));this.renderer.setClearColor(0,0);this.renderer.toneMapping=THREE.ACESFilmicToneMapping;
     host.appendChild(this.renderer.domElement);this.renderer.domElement.addEventListener('pointerdown',this.pointerDown);this.renderer.domElement.addEventListener('pointerup',this.pointerUp);this.renderer.domElement.addEventListener('pointercancel',this.pointerCancel);this.renderer.domElement.style.touchAction='none';
     this.canvas.width=1024;this.canvas.height=1024;this.texture=new THREE.CanvasTexture(this.canvas);this.texture.colorSpace=THREE.SRGBColorSpace;this.enamel.map=this.texture;
-    this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.enablePan=false;this.controls.minDistance=4;this.controls.maxDistance=15;this.resetView();
+    this.controls=new OrbitControls(this.camera,this.renderer.domElement);this.controls.enableDamping=true;this.controls.enablePan=false;this.controls.minDistance=.35;this.controls.maxDistance=18;this.camera.position.set(2.3,.8,9);this.controls.update();this.renderer.domElement.addEventListener('wheel',this.cancelCamera,{passive:true});
     this.scene.add(this.badge,this.selectionOutline);this.resize=new ResizeObserver(()=>this.fit());this.resize.observe(host);this.fit();
   }
   async init(){const response=await fetch('/escudo.svg');if(!response.ok)throw Error('SVG missing');const svg=await response.text();if(this.disposed)return;
@@ -44,9 +46,28 @@ export class BadgeEngine {
     const room=new RoomEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.env=pmrem.fromScene(room,.035);this.scene.environment=this.env.texture;room.dispose();pmrem.dispose();this.animate();
   }
   private animate=()=>{if(this.disposed)return;this.previousCamera.copy(this.camera.position);if(this.cameraTween){const t=this.cameraTween,k=Math.min(1,(performance.now()-t.start)/450),ease=1-Math.pow(1-k,3);this.camera.position.lerpVectors(t.from,t.to,ease);this.controls.target.lerpVectors(t.targetFrom,t.targetTo,ease);if(k===1)this.cameraTween=null;}this.controls.update();const delta=this.camera.position.clone().sub(this.previousCamera);const right=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,1);const strength=this.settings?.motionBlur||0;const blur=new THREE.Vector2(delta.dot(right),delta.dot(up)).multiplyScalar(strength*.3);blur.clampLength(0,.025);if(!this.exporting)this.motion.render(this.renderer,this.scene,this.camera,blur);this.raf=requestAnimationFrame(this.animate);};
-  private fit(){const w=this.host.clientWidth,h=this.host.clientHeight;if(!w||!h)return;this.renderer.setSize(w,h);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.frameBadge();}
-  resetView(){this.camera.position.set(2.3,.8,9);this.controls.target.set(0,0,0);this.controls.update();this.frameBadge();}
-  private frameBadge(){if(!this.badge.children.length)return;this.badge.updateMatrixWorld(true);const bounds=new THREE.Box3().setFromObject(this.badge),target=bounds.getCenter(new THREE.Vector3());if(this.selected){const picked=new THREE.Box3();for(const mesh of this.badge.children)if(mesh.userData.pick?.id===this.selected.id)picked.expandByObject(mesh);if(!picked.isEmpty())target.lerp(picked.getCenter(new THREE.Vector3()),.12);}const distance=safeFrameDistance(bounds,this.camera.aspect,this.camera.fov,target);this.controls.minDistance=distance;this.controls.maxDistance=Math.max(18,distance*2);const direction=this.camera.position.clone().sub(this.controls.target).normalize();const to=target.clone().addScaledVector(direction,distance*(this.selected?1:1.08));if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){this.camera.position.copy(to);this.controls.target.copy(target);this.controls.update();this.cameraTween=null;return;}this.cameraTween={start:performance.now(),from:this.camera.position.clone(),to,targetFrom:this.controls.target.clone(),targetTo:target};}
+  private fit(){
+    const w=this.host.clientWidth,h=this.host.clientHeight;if(!w||!h)return;
+    this.renderer.setSize(w,h);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();
+    this.frameBadge(true);
+    // Resizing clears the drawing buffer after RAF. Redraw before the browser paints.
+    if(!this.exporting)this.renderer.render(this.scene,this.camera);
+  }
+  resetView(){this.select(null);}
+  private frameBadge(retarget=false){
+    if(!this.badge.children.length)return;
+    this.badge.updateMatrixWorld(true);
+    const bounds=new THREE.Box3().setFromObject(this.badge),picked=new THREE.Box3();
+    if(this.selected)for(const mesh of this.badge.children)if(mesh.userData.pick?.id===this.selected.id)picked.expandByObject(mesh);
+    const {target,distance}=badgeFrame(bounds,picked.isEmpty()?null:picked,this.camera.aspect,this.camera.fov);
+    this.controls.maxDistance=Math.max(18,distance*2);
+    const direction=this.camera.position.clone().sub(this.controls.target).normalize();
+    const to=target.clone().addScaledVector(direction,distance);
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){this.camera.position.copy(to);this.controls.target.copy(target);this.controls.update();this.cameraTween=null;return;}
+    // A changing inspector width updates the destination of the same movement.
+    if(retarget&&this.cameraTween){this.cameraTween.to.copy(to);this.cameraTween.targetTo.copy(target);return;}
+    this.cameraTween={start:performance.now(),from:this.camera.position.clone(),to,targetFrom:this.controls.target.clone(),targetTo:target};
+  }
   update(s:BadgeSettings){this.settings={...s};if(!this.points.length)return;this.metal.color.set(s.metal==='gold'?'#e8bc69':s.metal==='silver'?'#dbe0e8':'#4b5260');this.metal.roughness=s.roughness;this.scene.environmentIntensity=s.light;this.enamel.roughness=s.faceRoughness;this.enamel.clearcoat=1-s.faceRoughness;this.enamel.clearcoatRoughness=s.faceRoughness;this.surfaces.apply(this.metal,s.surface,s.textureStrength);this.frameMaterial.color.set(s.frameMetal==='gold'?'#e8bc69':s.frameMetal==='silver'?'#dbe0e8':'#4b5260');this.frameMaterial.roughness=s.frameRoughness;this.surfaces.apply(this.frameMaterial,s.frameSurface,s.frameTextureStrength);this.surfaces.apply(this.enamel,s.faceSurface,s.faceTextureStrength);const key=`${s.thickness}-${s.rim}-${s.curvature}-${s.relief}-${this.parts.length ? [s.scale,s.x,s.y,s.rotation].join() : ""}`;if(key!==this.geometryKey){this.geometryKey=key;this.build(s);}this.paint();}
   private build(s:BadgeSettings){for(const obj of [...this.badge.children]){this.badge.remove(obj);(obj as THREE.Mesh).geometry.dispose();}
     const shape=new THREE.Shape(this.points);const options={depth:s.thickness,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.014,bevelThickness:.014,curveSegments:32};
@@ -58,7 +79,7 @@ export class BadgeEngine {
     const angle=-s.rotation*Math.PI/180;
     for(const part of this.parts){const layer=this.layers.find(l=>l.id===part.layer)!;const g=part.geometry.clone(),p=g.getAttribute('position');for(let i=0;i<p.count;i++){const x=p.getX(i)*s.scale,y=p.getY(i)*s.scale;p.setXYZ(i,x*Math.cos(angle)-y*Math.sin(angle)+s.x*.02,x*Math.sin(angle)+y*Math.cos(angle)-s.y*.02,p.getZ(i)*s.relief*layer.height+s.thickness+.027+part.order*.0015);}g.computeVertexNormals();const mesh=new THREE.Mesh(g,this.reliefMaterials.get(part.layer));mesh.name=part.layer;mesh.userData.pick={kind:'layer',id:part.layer,label:layer.name};this.badge.add(mesh);}
     for(const child of this.badge.children){const mesh=child as THREE.Mesh;mesh.geometry.translate(0,0,mesh.position.z);mesh.position.z=0;mesh.geometry=surfaceUV(mesh.geometry,mesh.userData.pick?.kind==='face');mesh.geometry=bendGeometry(mesh.geometry,s.curvature);}
-    this.highlight();this.frameBadge();
+    this.highlight();if(!this.hasFramed){this.frameBadge();this.hasFramed=true;}
 
   }
   private paint(){const s=this.settings;if(!s)return;const ctx=this.canvas.getContext('2d')!;ctx.fillStyle=s.face;ctx.fillRect(0,0,1024,1024);ctx.save();ctx.translate(512+s.x*5,512+s.y*5);ctx.rotate(s.rotation*Math.PI/180);ctx.scale(s.scale,s.scale);
@@ -75,5 +96,5 @@ export class BadgeEngine {
 
   async download(kind:'png'|'glb'){let blob:Blob;if(kind==='png'){const old=this.renderer.getSize(new THREE.Vector2()),ratio=this.renderer.getPixelRatio(),aspect=this.camera.aspect;try{this.exporting=true;this.selectionOutline.visible=false;this.renderer.setPixelRatio(1);this.renderer.setSize(2048,2048,false);this.camera.aspect=1;this.camera.updateProjectionMatrix();this.renderer.render(this.scene,this.camera);blob=await new Promise<Blob>((resolve,reject)=>this.renderer.domElement.toBlob(b=>b?resolve(b):reject(Error('PNG failed')),'image/png'));}finally{this.exporting=false;this.selectionOutline.visible=true;this.renderer.setPixelRatio(ratio);this.renderer.setSize(old.x,old.y,false);this.camera.aspect=aspect;this.camera.updateProjectionMatrix();}}else{const result=await new GLTFExporter().parseAsync(this.badge,{binary:true});blob=new Blob([result as ArrayBuffer],{type:'model/gltf-binary'});}const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=`mi-badge.${kind}`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   }
-  dispose(){this.disposed=true;this.renderer.domElement.removeEventListener('pointerdown',this.pointerDown);this.renderer.domElement.removeEventListener('pointerup',this.pointerUp);this.renderer.domElement.removeEventListener('pointercancel',this.pointerCancel);this.select(null);this.outlineMaterial.dispose();cancelAnimationFrame(this.raf);this.resize.disconnect();this.controls.dispose();this.badge.traverse(o=>{if(o instanceof THREE.Mesh)o.geometry.dispose();});this.clearRelief();this.metal.dispose();this.frameMaterial.dispose();this.enamel.dispose();this.texture.dispose();this.env?.dispose();this.surfaces.dispose();this.motion.dispose();this.renderer.dispose();this.renderer.domElement.remove();}
+  dispose(){this.disposed=true;this.renderer.domElement.removeEventListener('wheel',this.cancelCamera);this.renderer.domElement.removeEventListener('pointerdown',this.pointerDown);this.renderer.domElement.removeEventListener('pointerup',this.pointerUp);this.renderer.domElement.removeEventListener('pointercancel',this.pointerCancel);this.select(null);this.outlineMaterial.dispose();cancelAnimationFrame(this.raf);this.resize.disconnect();this.controls.dispose();this.badge.traverse(o=>{if(o instanceof THREE.Mesh)o.geometry.dispose();});this.clearRelief();this.metal.dispose();this.frameMaterial.dispose();this.enamel.dispose();this.texture.dispose();this.env?.dispose();this.surfaces.dispose();this.motion.dispose();this.renderer.dispose();this.renderer.domElement.remove();}
 }

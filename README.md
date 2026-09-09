@@ -18,7 +18,7 @@ Abrir la dirección que imprime el servidor.
 1. Abrir **Ajustes generales**. Usar la base Boca o **Cambiar base · SVG** para cargar otra silueta.
 2. Cargar **Cornetas en relieve**, un SVG propio o una imagen para impresión plana.
 3. Tocar una pieza. Ajustar su material, color, textura y relieve en el inspector contextual.
-4. Arrastrar para girar y usar la rueda para zoom. El encuadre limita el acercamiento para conservar el badge dentro del área útil.
+4. Arrastrar para girar y usar la rueda para zoom. El zoom manual permite acercarse al detalle. Seleccionar enfoca la pieza y tocar el fondo vuelve al encuadre general.
 5. Exportar un PNG transparente o un GLB.
 
 El menú flotante es el modo inicial. Tiene una zona propia al lado del canvas, o debajo en pantallas pequeñas. **Panel fijo** permite comparar la otra variante. Esc o un clic vacío quitan la selección. El selector de piezas ofrece una alternativa por teclado.

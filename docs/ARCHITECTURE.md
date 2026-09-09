@@ -17,7 +17,7 @@ Los archivos seleccionados se leen localmente en el navegador. No hay base de da
 
 ## Selección y encuadre
 
-Un clic selecciona la pieza visible más cercana. La ilustración se edita por grupo. El inspector contextual ocupa una región distinta al viewport. La cámara hace una transición de 450 ms y un acercamiento moderado; el límite de zoom conserva un margen alrededor del badge. La preferencia de movimiento reducido omite la animación. Arrastrar interrumpe la transición.
+Un clic selecciona la pieza visible más cercana. La ilustración se edita por grupo. El inspector contextual ocupa una región distinta al viewport. La cámara hace una transición de 450 ms hacia el centro y tamaño del grupo seleccionado; el zoom manual es independiente del encuadre automático y permite recortar el badge para explorar detalles. La preferencia de movimiento reducido omite la animación. Arrastrar o usar la rueda interrumpe la transición. Redimensionar el canvas actualiza el destino y vuelve a dibujar antes de pintar para evitar cuadros vacíos. Los cambios de material o relieve conservan la cámara.
 
 ## Blender
 

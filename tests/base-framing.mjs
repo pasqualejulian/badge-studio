@@ -10,3 +10,13 @@ for(const shape of ['<rect x="0" y="0" width="100" height="50"/>','<circle cx="3
 assert.throws(()=>parseBaseSVG('<svg><path d="M0 0 L10 10"/></svg>'),/cerrado/);
 const bounds=new T.Box3(new T.Vector3(-2,-2,-.3),new T.Vector3(2,2,.3));assert(safeFrameDistance(bounds,.5,33)>safeFrameDistance(bounds,1.5,33));
 console.log('Custom rectangular/circular/triangular bases, open contour rejection and responsive safe framing passed.');
+
+const {badgeFrame}=await import('../lib/framing.ts');
+const detail=new T.Box3(new T.Vector3(.8,.8,0),new T.Vector3(1.2,1.2,.1));
+for(const aspect of [.5,1,2]){
+ const overview=badgeFrame(bounds,null,aspect,33),focus=badgeFrame(bounds,detail,aspect,33);
+ assert(focus.distance<overview.distance*.8,'Selecting a detail must zoom in substantially');
+ assert(focus.target.distanceTo(detail.getCenter(new T.Vector3()))<1e-9);
+ assert(overview.target.distanceTo(bounds.getCenter(new T.Vector3()))<1e-9);
+ assert(Number.isFinite(focus.distance)&&focus.distance>=.8);
+}
