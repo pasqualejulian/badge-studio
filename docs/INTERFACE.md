@@ -28,3 +28,11 @@ Grafito cálido, texto marfil y acento champagne. La geometría de la pieza se a
 La iluminación usa un entorno de softboxes definido en lib/studio-lighting.ts para reflejos sobre el metal. Es iluminación del visor, no se incorpora al GLB. Las seis miniaturas se renderizan desde lib/material-preview.ts y se sirven como PNG estáticos. Representan el material con su color, mientras que la aplicación conserva inicialmente el color elegido hasta activar Usar color del material.
 
 En móvil, arrastrar un slider de propiedades atenúa los controles circundantes. Se mantienen texto y valor del ajuste activo. La textura se sigue editando desde su sección específica.
+
+## Bienvenida al canvas
+
+La primera vez que el motor está listo se abre una guía breve: seleccionar directamente el borde, la base o una capa SVG, editar su acabado y crear un sistema con plantillas y colecciones. El cierre explica que cada pieza se guarda por separado y que la biblioteca es local al navegador.
+
+Se puede saltear, cerrar con Escape o volver a abrir con Ayuda junto a Centrar. Probar en el canvas activa el modo Canvas. La preferencia de cierre se guarda en localStorage con la clave `badge-studio.canvas-guide.v1`. Si el navegador impide guardar preferencias, la ayuda funciona pero puede reaparecer en otra visita.
+
+Validado en navegador a 1200×800 y 390×700: primera apertura, cierre, persistencia tras recargar, reapertura manual y Escape. No se agregó una dependencia de tours.
