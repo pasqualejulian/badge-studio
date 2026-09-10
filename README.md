@@ -78,3 +78,5 @@ Registro de esta iteración: [texturas propias y movimiento/video](docs/NEXT-ITE
 ### Materiales propios y video
 
 Seleccioná una pieza para abrir **Materiales y mapas**: seis presets CC0, carga de color/normal/rugosidad y controles de repetición, orientación e intensidad. En **Acabado y movimiento** podés reproducir un giro o balanceo y exportar un ciclo a video. [Texturas](docs/TEXTURES.md) · [Video y límites](docs/VIDEO.md).
+
+La edición móvil usa una [capa translúcida con controles inferiores](docs/INTERFACE.md), vista despejada del objeto y distribución lateral en horizontal. En escritorio, el inspector separa Pieza y Texturas.
