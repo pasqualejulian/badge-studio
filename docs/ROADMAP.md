@@ -4,7 +4,7 @@ Registro de ideas discutidas durante la POC. Las secciones pendientes no son fun
 
 ## Dirección acordada
 
-Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar lo que se quiere modificar y mostrar sólo sus controles. Mantener el panel fijo como alternativa, sin obligar a recorrer todos los parámetros.
+Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar lo que se quiere modificar y mostrar sólo sus controles. Usar sólo canvas en la interfaz activa. La versión con panel fijo se conserva en la etiqueta Git interface-panel-v11.
 
 ## Implementado
 
@@ -13,7 +13,9 @@ Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar l
 - [x] Impresión plana y SVG con volumen por formas/trazos.
 - [x] Materiales, colores, texturas, rugosidad y altura por grupo.
 - [x] Ejemplo de cornetas y estrellas con cinco grupos.
-- [x] Selección directa y variantes de inspector fijo/contextual.
+- [x] Selección directa e inspector contextual unificado: material, brillo, textura y volumen.
+- [x] Guardar explícito en la barra, confirmación de guardado y biblioteca separada de la edición.
+- [x] Versión anterior con panel conservada en Git.
 - [x] Menú contextual principal en una zona separada del modelo.
 - [x] Encuadre adaptativo, aproximación al seleccionar y respeto de movimiento reducido.
 - [x] Corrección del colapso de UVs en laterales extruidos.

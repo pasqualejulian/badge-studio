@@ -37,7 +37,7 @@ El menú flotante es el modo inicial. Tiene una zona propia al lado del canvas, 
 
 ## Límites de esta POC
 
-- El guardado es manual en Mis badges y vive en este navegador. Las ediciones sin guardar se pierden al recargar. No hay sincronización, historial ni deshacer. Exportar .badge permite conservar una copia fuera del navegador.
+- El guardado es manual en Biblioteca y vive en este navegador. Las ediciones sin guardar se pierden al recargar. No hay sincronización, historial ni deshacer. Exportar .badge permite conservar una copia fuera del navegador.
 - La base SVG usa el contorno cerrado más grande. No interpreta perforaciones internas, múltiples chapas ni contornos abiertos. Conviene usar una silueta simple, centrada y sin efectos.
 - Un SVG de ilustración admite hasta 160 trazados, 4000 segmentos y 500 KB. Texto, máscaras, filtros, degradados e imágenes incrustadas requieren simplificación o rasterización.
 - La selección de la ilustración edita un grupo, no cada estrella o trazo individual. El ejemplo tiene cinco grupos y 26 piezas.
@@ -71,18 +71,20 @@ El roadmap está únicamente en el repositorio, no en la interfaz del editor.
 
 ### Controles del canvas
 
-En menú flotante, **Base** cambia el SVG y la geometría, **Diseño completo** carga la ilustración y ajusta escala, posición y rotación global, y **Acabado y movimiento** edita materiales y desenfoque. Los sliders admiten arrastre y teclado. Desenfoque: 0–0,05, inicial 0,02. El encuadre automático no aplica desenfoque.
+En el canvas, **Base** cambia el SVG y la geometría, **Diseño completo** carga la ilustración y ajusta escala, posición y rotación global, y **Escena y movimiento** edita materiales y desenfoque. Los sliders admiten arrastre y teclado. Desenfoque: 0–0,05, inicial 0,02. El encuadre automático no aplica desenfoque.
 
 Registro de esta iteración: [texturas propias y movimiento/video](docs/NEXT-ITERATION.md), con alcance original y pendientes.
 
 ### Materiales propios y video
 
-Seleccioná una pieza para abrir **Materiales y mapas**: seis presets CC0, carga de color/normal/rugosidad y controles de repetición, orientación e intensidad. En **Acabado y movimiento** podés reproducir un giro o balanceo y exportar un ciclo a video. [Texturas](docs/TEXTURES.md) · [Video y límites](docs/VIDEO.md).
+Seleccioná una pieza para abrir **Materiales y mapas**: seis presets CC0, carga de color/normal/rugosidad y controles de repetición, orientación e intensidad. En **Escena y movimiento** podés reproducir un giro o balanceo y exportar un ciclo a video. [Texturas](docs/TEXTURES.md) · [Video y límites](docs/VIDEO.md).
 
-La edición móvil usa una [capa translúcida con controles inferiores](docs/INTERFACE.md), vista despejada del objeto y distribución lateral en horizontal. En escritorio, el inspector separa Pieza y Texturas.
+La edición móvil usa una [capa translúcida con controles inferiores](docs/INTERFACE.md), vista despejada del objeto y distribución lateral en horizontal. El inspector reúne material, brillo y texturas por pieza, con controles avanzados desplegables.
 
 La dirección visual usa grafito cálido y acentos champagne. La biblioteca muestra chapas renderizadas con sus materiales, y la escena usa softboxes para definir los reflejos. Detalle y relieve y la carga de mapas propios se despliegan cuando hacen falta.
 
 ### Piezas, plantillas y sistemas
 
-**Mis badges** permite guardar la pieza completa, abrirla, duplicarla, renombrarla y eliminarla. Una plantilla crea variantes independientes con la misma base y materiales. El campo sistema/colección y la búsqueda ayudan a organizar familias. Los archivos `.badge` incluyen SVGs, imágenes, mapas, alturas por grupo, cámara y movimiento. Se pueden importar en otro navegador o equipo. No hay herencia de cambios entre variantes ni guardado automático. [Formato, almacenamiento y límites](docs/PROJECTS.md).
+**Biblioteca** permite guardar la pieza completa, abrirla, duplicarla, renombrarla y eliminarla. Una plantilla crea variantes independientes con la misma base y materiales. El campo sistema/colección y la búsqueda ayudan a organizar familias. Los archivos `.badge` incluyen SVGs, imágenes, mapas, alturas por grupo, cámara y movimiento. Se pueden importar en otro navegador o equipo. No hay herencia de cambios entre variantes ni guardado automático. [Formato, almacenamiento y límites](docs/PROJECTS.md).
+
+**Guardar** está siempre en la barra principal y admite Cmd/Ctrl+S. Biblioteca no reemplaza la edición al abrirse. La interfaz anterior con Panel/Canvas se conserva en la etiqueta `interface-panel-v11`.
