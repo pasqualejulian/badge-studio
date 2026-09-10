@@ -2,11 +2,11 @@
 
 Rama experimental `experiment/selection-focus`. No cambia producción.
 
-- Al seleccionar, atenúa color y reflejos de otras partes con una entrada suave.
-- Conserva la chapa opaca, sin introducir transparencias.
-- Aislar capa oculta únicamente las otras capas SVG. El marco y la base siguen visibles.
-- Otra selección reinicia el aislamiento. El fondo o Centrar quitan el foco.
-- El efecto se aplica únicamente durante el render interactivo y se restaura al terminar, incluso si el render falla. Capturas, archivos, miniaturas y video usan los materiales originales.
-- La preferencia no se guarda en proyectos. No modifica sus materiales.
+- La selección conserva su material. Las demás partes, incluida la base, se muestran como contexto translúcido al 10% de su opacidad original, con reflejos reducidos.
+- Solo selección oculta todas las otras partes, también base y marco. Está disponible para cualquier selección, no solo capas SVG.
+- Mostrar contexto recupera la vista translúcida. Otra selección reinicia el aislamiento. El fondo o Centrar quitan el foco.
+- Las partes ocultas no interceptan clics. Las translúcidas siguen siendo seleccionables.
+- Se usan copias temporales de materiales sin escritura de profundidad para el contexto. Se restauran referencias y visibilidad originales al terminar cada render, incluso si falla. Capturas, archivos, miniaturas y video usan el objeto completo y sus materiales originales.
+- La preferencia no se guarda en proyectos. Las copias se liberan al dejar de usarlas o destruir el motor.
 
-Pendiente de evaluar con el usuario: intensidad de atenuación, conveniencia del aislamiento y legibilidad con ilustraciones complejas. Al deseleccionar la restitución es inmediata, la entrada al foco es gradual. Se respeta reducción de movimiento.
+Pendiente de evaluar con el usuario: legibilidad de transparencias superpuestas con ilustraciones complejas. Al deseleccionar la restitución es inmediata, la entrada al foco es gradual. Se respeta reducción de movimiento.
