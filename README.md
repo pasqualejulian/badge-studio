@@ -86,3 +86,11 @@ La dirección visual usa grafito cálido y acentos champagne. La biblioteca mues
 ### Piezas, plantillas y sistemas
 
 **Mis badges** permite guardar la pieza completa, abrirla, duplicarla, renombrarla y eliminarla. Una plantilla crea variantes independientes con la misma base y materiales. El campo sistema/colección y la búsqueda ayudan a organizar familias. Los archivos `.badge` incluyen SVGs, imágenes, mapas, alturas por grupo, cámara y movimiento. Se pueden importar en otro navegador o equipo. No hay herencia de cambios entre variantes ni guardado automático. [Formato, almacenamiento y límites](docs/PROJECTS.md).
+
+## Despliegue en Vercel
+
+El repositorio incluye una salida estática con el mismo editor y assets. `vercel.json` configura Vite, `npm run build:vercel` y `dist-vercel`. No requiere variables de entorno ni backend. Las fuentes Geist se sirven desde el propio sitio.
+
+Para publicar, importar este repositorio en Vercel o ejecutar `npx vercel --prod` con una sesión autenticada. La configuración Sites original se conserva para el entorno de desarrollo anterior.
+
+Cada persona guarda sus piezas en el navegador. La biblioteca del dominio anterior no se traslada automáticamente: exportar `.badge` allí e importarlo en el nuevo dominio. Compartir la URL del editor no comparte las piezas guardadas. No activar protección por inicio de sesión en producción si se busca acceso público.

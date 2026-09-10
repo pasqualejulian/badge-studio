@@ -41,3 +41,5 @@ next-env.d.ts
 
 # User-authored editable projects
 *.badge
+
+/dist-vercel/
