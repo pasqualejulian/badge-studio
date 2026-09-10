@@ -19,7 +19,11 @@ Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar l
 - [x] Corrección del colapso de UVs en laterales extruidos.
 - [x] PNG y GLB; desenfoque de giro opcional.
 
-## Próxima prioridad: edición confiable
+## Prioridad elegida: texturas y movimiento/video
+
+El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación en [NEXT-ITERATION.md](NEXT-ITERATION.md). Todo sigue pendiente hasta su implementación.
+
+## Edición confiable: backlog transversal
 
 - [ ] QA visual del canvas, selección y exportaciones en escritorio y móvil.
 - [ ] Guardar/abrir proyecto completo, incluyendo SVGs, imágenes y cámara.
@@ -54,7 +58,7 @@ Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar l
 - [ ] Opciones de simplificación para ilustraciones densas y control de detalle.
 - [ ] Reverso del badge con otro diseño, fecha o inscripción.
 
-## Movimiento y video (pedido para una iteración posterior)
+## Movimiento y video (priorizado para la próxima iteración)
 
 - [ ] Presets: giro 360°, balanceo, entrada de logro y acercamiento de detalle.
 - [ ] Duración, velocidad, easing, pausa y bucle.
