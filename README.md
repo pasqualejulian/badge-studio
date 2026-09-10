@@ -94,3 +94,9 @@ El repositorio incluye una salida estática con el mismo editor y assets. `verce
 Para publicar, importar este repositorio en Vercel o ejecutar `npx vercel --prod` con una sesión autenticada. La configuración Sites original se conserva para el entorno de desarrollo anterior.
 
 Cada persona guarda sus piezas en el navegador. La biblioteca del dominio anterior no se traslada automáticamente: exportar `.badge` allí e importarlo en el nuevo dominio. Compartir la URL del editor no comparte las piezas guardadas. No activar protección por inicio de sesión en producción si se busca acceso público.
+
+### Inscripción del reverso
+
+**Reverso** permite escribir hasta tres líneas, elegir Sans/Clásica/Monoespaciada y ajustar tamaño, intensidad, posición y rotación. Ver reverso / Ver frente gira la cámara. Funciona con bases personalizadas y su curvatura. El texto se recorta al contorno, por lo que puede desaparecer si se mueve fuera de la chapa.
+
+Es una simulación mediante color y normales sobre una superficie trasera transparente, no un recorte geométrico ni un archivo de fabricación. Se incluye en PNG, video, GLB y proyectos `.badge`. Los visores GLB pueden representar transparencias y reflejos de otra manera. Las fuentes genéricas pueden variar entre dispositivos.

@@ -40,3 +40,7 @@ Exportar `.badge` es la copia transportable. Si falla el guardado por almacenami
 - TypeScript y build de producción.
 
 Esto no es una validación visual de la biblioteca ni una prueba táctil en dispositivos físicos.
+
+## Inscripción del reverso
+
+`scene.engraving` conserva texto (hasta 3 líneas y 160 caracteres), tipografía, tamaño, posición, rotación e intensidad. Los proyectos v1 anteriores sin ese campo abren sin inscripción. Versiones antiguas del editor pueden descartar este campo al volver a guardar.

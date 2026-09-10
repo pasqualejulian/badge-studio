@@ -8,3 +8,7 @@ const reject=change=>{const q=structuredClone(p);change(q);assert.throws(()=>par
 reject(q=>q.version=2);reject(q=>q.scene.settings.scale=0);reject(q=>q.scene.camera.position=[0,0,0]);reject(q=>q.scene.raster='https://example.com/remote.png');reject(q=>q.scene.basePoints=[[0,0],[0,1],[0,2]]);reject(q=>q.scene.maps.unknown={settings:{},images:{}});reject(q=>{q.scene.designSVG='<svg/>';q.scene.raster=image;});
 const injected=structuredClone(p);injected.scene.settings.unknown='discard';assert.equal(parseProject(JSON.stringify(injected)).scene.settings.unknown,undefined);
 assert.throws(()=>parseProject('{'));console.log('Editable project roundtrip, independent variants and incompatible/untrusted input rejection passed.');
+
+assert.equal(restored.scene.engraving.text,'');
+const engraved=structuredClone(p);engraved.scene.engraving={text:'TEMPORADA 2026\n01/50',font:'serif',size:60,x:3,y:-2,rotation:15,strength:.7};assert.deepEqual(parseProject(serializeProject(engraved)).scene.engraving,engraved.scene.engraving);
+reject(q=>q.scene.engraving={...engraved.scene.engraving,strength:5});
