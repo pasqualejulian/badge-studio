@@ -20,3 +20,11 @@ Al editar, una capa de pantalla completa mantiene el objeto detrás. Los control
 ## Verificación y pendientes
 
 Compilación TypeScript, build y pruebas existentes. Queda la evaluación visual/táctil en teléfonos reales, incluyendo teclado virtual y Safari. Ajustar opacidad y altura del panel a partir de esa prueba. El botón Ver objeto conserva selección y parámetros, pero el resize del visor puede detener la reproducción de movimiento, de acuerdo con el comportamiento actual del motor.
+
+## Dirección visual: estudio de objetos
+
+Grafito cálido, texto marfil y acento champagne. La geometría de la pieza se agrupa en Detalle y relieve, y los archivos de textura en Cargar mis propios mapas. Se conservan los controles y rangos existentes.
+
+La iluminación usa un entorno de softboxes definido en lib/studio-lighting.ts para reflejos sobre el metal. Es iluminación del visor, no se incorpora al GLB. Las seis miniaturas se renderizan desde lib/material-preview.ts y se sirven como PNG estáticos. Representan el material con su color, mientras que la aplicación conserva inicialmente el color elegido hasta activar Usar color del material.
+
+En móvil, arrastrar un slider de propiedades atenúa los controles circundantes. Se mantienen texto y valor del ajuste activo. La textura se sigue editando desde su sección específica.

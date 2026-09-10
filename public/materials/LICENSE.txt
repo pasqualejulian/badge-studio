@@ -3,4 +3,4 @@ License: https://polyhaven.com/license
 CC0: https://creativecommons.org/publicdomain/zero/1.0/
 See manifest.json for source IDs, direct asset URLs and processing.
 Files redistributed as 1K JPEG color, OpenGL normal and roughness maps.
-Thumbnail images in Badge Studio use these color maps, not website preview renders.
+Thumbnail images are rendered locally from these maps, not copied from website preview renders.

@@ -4,7 +4,7 @@ import type {MotionOptions} from './animation';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import {studioEnvironment,disposeEnvironmentScene} from './studio-lighting';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { parseRelief, bendGeometry, type ReliefLayer, type ReliefPart } from './relief';
 import { SurfaceLibrary, type Surface } from './surfaces';
@@ -25,7 +25,7 @@ export class BadgeEngine {
   private cameraTween:{start:number;from:THREE.Vector3;to:THREE.Vector3;targetFrom:THREE.Vector3;targetTo:THREE.Vector3}|null=null;
   private cancelCamera=()=>{this.cameraTween=null;};
   onSelect?: (pick:BadgePick|null)=>void;
-  private selected:BadgePick|null=null; private selectionOutline=new THREE.Group(); private outlineMaterial=new THREE.LineBasicMaterial({color:'#e5f76c',transparent:true,opacity:.9,depthTest:false});
+  private selected:BadgePick|null=null; private selectionOutline=new THREE.Group(); private outlineMaterial=new THREE.LineBasicMaterial({color:'#d8be91',transparent:true,opacity:.9,depthTest:false});
   private down:{x:number;y:number}|null=null; private pointers=new Set<number>();
   private pointerDown=(e:PointerEvent)=>{if(this.playback?.active||this.exporting)return;this.cameraTween=null;if(e.button!==0)return;this.pointers.add(e.pointerId);this.down=this.pointers.size===1?{x:e.clientX,y:e.clientY}:null;};
   private pointerUp=(e:PointerEvent)=>{if(this.playback.active||this.exporting)return;const start=this.down;const single=this.pointers.size===1;this.pointers.delete(e.pointerId);this.down=null;if(!start||!single||!isSelectionGesture(start,{x:e.clientX,y:e.clientY}))return;const picked=pickBadge(this.camera,this.badge.children,this.renderer.domElement.getBoundingClientRect(),e.clientX,e.clientY);this.select(picked);};
@@ -51,7 +51,7 @@ export class BadgeEngine {
   async init(){const response=await fetch('/escudo.svg');if(!response.ok)throw Error('SVG missing');const svg=await response.text();if(this.disposed)return;
     const parsed=new SVGLoader().parse(svg);this.points=parsed.paths[1].subPaths[0].getPoints(32).map(p=>new THREE.Vector2((p.x-1314)/3139*4,(1569.5-p.y)/3139*4));
     this.bocaPoints=this.points.map(p=>p.clone());
-    const room=new RoomEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.env=pmrem.fromScene(room,.035);this.scene.environment=this.env.texture;room.dispose();pmrem.dispose();this.animate();
+    const room=studioEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.env=pmrem.fromScene(room,.035);this.scene.environment=this.env.texture;disposeEnvironmentScene(room);pmrem.dispose();this.animate();
   }
   private animate=()=>{if(this.disposed)return;const now=performance.now(),dt=Math.max(1/240,Math.min(.1,(now-this.lastFrameTime)/1000)),automatic=!!this.cameraTween;this.lastFrameTime=now;this.previousCamera.copy(this.camera.position);if(this.cameraTween){const t=this.cameraTween,k=Math.min(1,(performance.now()-t.start)/450),ease=1-Math.pow(1-k,3);this.camera.position.lerpVectors(t.from,t.to,ease);this.controls.target.lerpVectors(t.targetFrom,t.targetTo,ease);if(k===1)this.cameraTween=null;}if(!this.playback.tick(now))this.controls.update();const delta=this.camera.position.clone().sub(this.previousCamera);const right=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,1);const strength=automatic?0:Math.min(.05,Math.max(0,this.settings?.motionBlur||0));const blur=new THREE.Vector2(delta.dot(right),delta.dot(up)).multiplyScalar(strength*.3/(dt*60));blur.clampLength(0,strength*.03);if(!this.exporting)this.motion.render(this.renderer,this.scene,this.camera,blur);this.raf=requestAnimationFrame(this.animate);};
   private fit(){
