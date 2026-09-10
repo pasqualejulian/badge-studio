@@ -10,3 +10,7 @@ Rama experimental `experiment/selection-focus`. No cambia producción.
 - La preferencia no se guarda en proyectos. Las copias se liberan al dejar de usarlas o destruir el motor.
 
 Pendiente de evaluar con el usuario: legibilidad de transparencias superpuestas con ilustraciones complejas. Al deseleccionar la restitución es inmediata, la entrada al foco es gradual. Se respeta reducción de movimiento.
+
+## Activación opcional
+
+Resaltar selección está apagado por defecto. Apagado conserva la visualización de main: selección, contorno y cámara originales, sin transparencias ni aislamiento. Encendido habilita el contexto translúcido y Solo selección. Apagarlo cancela también el aislamiento. Se mantiene durante la sesión entre selecciones, pero no se persiste ni se exporta.
