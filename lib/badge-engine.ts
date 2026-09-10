@@ -13,6 +13,7 @@ export type { BadgePick } from './interaction';
 export type { ReliefLayer } from './relief';
 export interface BadgeSettings {faceTextureStrength:number;frameMetal:'gold'|'silver'|'black';frameSurface:Surface;frameRoughness:number;frameTextureStrength:number;surface:Surface;faceSurface:Surface;textureStrength:number;faceRoughness:number;motionBlur:number;curvature:number;relief:number;metal:'gold'|'silver'|'black';thickness:number;rim:number;roughness:number;face:string;scale:number;x:number;y:number;rotation:number;light:number;title:string;number:string}
 export class BadgeEngine {
+  private lastFrameTime=performance.now();
   private hasFramed=false;
   private cameraTween:{start:number;from:THREE.Vector3;to:THREE.Vector3;targetFrom:THREE.Vector3;targetTo:THREE.Vector3}|null=null;
   private cancelCamera=()=>{this.cameraTween=null;};
@@ -45,7 +46,7 @@ export class BadgeEngine {
     this.bocaPoints=this.points.map(p=>p.clone());
     const room=new RoomEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.env=pmrem.fromScene(room,.035);this.scene.environment=this.env.texture;room.dispose();pmrem.dispose();this.animate();
   }
-  private animate=()=>{if(this.disposed)return;this.previousCamera.copy(this.camera.position);if(this.cameraTween){const t=this.cameraTween,k=Math.min(1,(performance.now()-t.start)/450),ease=1-Math.pow(1-k,3);this.camera.position.lerpVectors(t.from,t.to,ease);this.controls.target.lerpVectors(t.targetFrom,t.targetTo,ease);if(k===1)this.cameraTween=null;}this.controls.update();const delta=this.camera.position.clone().sub(this.previousCamera);const right=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,1);const strength=this.settings?.motionBlur||0;const blur=new THREE.Vector2(delta.dot(right),delta.dot(up)).multiplyScalar(strength*.3);blur.clampLength(0,.025);if(!this.exporting)this.motion.render(this.renderer,this.scene,this.camera,blur);this.raf=requestAnimationFrame(this.animate);};
+  private animate=()=>{if(this.disposed)return;const now=performance.now(),dt=Math.max(1/240,Math.min(.1,(now-this.lastFrameTime)/1000)),automatic=!!this.cameraTween;this.lastFrameTime=now;this.previousCamera.copy(this.camera.position);if(this.cameraTween){const t=this.cameraTween,k=Math.min(1,(performance.now()-t.start)/450),ease=1-Math.pow(1-k,3);this.camera.position.lerpVectors(t.from,t.to,ease);this.controls.target.lerpVectors(t.targetFrom,t.targetTo,ease);if(k===1)this.cameraTween=null;}this.controls.update();const delta=this.camera.position.clone().sub(this.previousCamera);const right=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,1);const strength=automatic?0:Math.min(.05,Math.max(0,this.settings?.motionBlur||0));const blur=new THREE.Vector2(delta.dot(right),delta.dot(up)).multiplyScalar(strength*.3/(dt*60));blur.clampLength(0,strength*.03);if(!this.exporting)this.motion.render(this.renderer,this.scene,this.camera,blur);this.raf=requestAnimationFrame(this.animate);};
   private fit(){
     const w=this.host.clientWidth,h=this.host.clientHeight;if(!w||!h)return;
     this.renderer.setSize(w,h);this.camera.aspect=w/h;this.camera.updateProjectionMatrix();

@@ -68,3 +68,7 @@ Stack: React, TypeScript, Three.js, Vinext/Vite y componentes Base UI/Shadcn. El
 - [Assets y publicación](docs/ASSETS.md)
 
 El roadmap está únicamente en el repositorio, no en la interfaz del editor.
+
+### Controles del canvas
+
+En menú flotante, **Base** cambia el SVG y la geometría, **Diseño completo** carga la ilustración y ajusta escala, posición y rotación global, y **Acabado y movimiento** edita materiales y desenfoque. Los sliders admiten arrastre y teclado. Desenfoque: 0–0,05, inicial 0,02. El encuadre automático no aplica desenfoque.
