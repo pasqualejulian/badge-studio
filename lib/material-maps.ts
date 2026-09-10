@@ -25,6 +25,7 @@ export class MaterialMaps{
  apply(id:string,m:T.MeshStandardMaterial,fallback:T.Texture|null=null){const e=this.entries.get(id);m.map=id==='face'?fallback:(e?.settings.colorEnabled?e.maps.color||fallback:fallback);if(e?.maps.normal){m.normalMap=e.maps.normal;m.normalScale.setScalar(e.settings.normalStrength);}if(e?.maps.roughness){m.roughnessMap=e.maps.roughness;m.roughness=e.settings.roughness;}m.needsUpdate=true;}
  face(){const e=this.entries.get('face');return e?.settings.colorEnabled&&e.maps.color?{image:e.maps.color.image as HTMLImageElement,settings:e.settings}:null;}
  clear(id:string){this.revisions.set(id,(this.revisions.get(id)||0)+1);const e=this.entries.get(id);if(e)Object.values(e.maps).forEach(t=>t.dispose());this.entries.delete(id);}
+ snapshot(){const result:Record<string,{settings:MapSettings;images:Partial<Record<MapKind,string>>}>={};for(const [id,e] of this.entries){const images:Partial<Record<MapKind,string>>={};for(const [kind,t] of Object.entries(e.maps) as [MapKind,T.Texture][]){const image=t.image as HTMLImageElement,canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;canvas.getContext('2d')!.drawImage(image,0,0);images[kind]=canvas.toDataURL('image/png');}result[id]={settings:{...e.settings},images};}return result;}
  clearLayers(){for(const id of new Set([...this.entries.keys(),...this.revisions.keys()]))if(!['body','frame','face'].includes(id))this.clear(id);}
  dispose(){this.disposed=true;for(const id of this.entries.keys())this.clear(id);}
 }

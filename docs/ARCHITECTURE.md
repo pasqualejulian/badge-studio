@@ -28,3 +28,7 @@ La evolución sería guardar una configuración versionada y reconstruir la esce
 ## Materiales externos y movimiento
 
 `lib/material-maps.ts` administra imágenes y transformaciones por destino, valida cargas y libera recursos. Se aplica después de los materiales procedurales. El color del esmalte se compone con la ilustración en canvas. `lib/animation.ts` define poses por tiempo y detección de formatos. `lib/motion-controller.ts` administra reproducción, pausa y captura con MediaRecorder, restaurando estado al terminar. La galería se sirve localmente desde `public/materials`, con manifiesto CC0.
+
+## Proyectos editables
+
+`lib/projects.ts` define el formato .badge v1, valida tipos/rangos y limita imágenes a datos incrustados. `projectStore` usa IndexedDB y confirma escrituras al completar la transacción. `app/project-library.tsx` administra biblioteca y metadatos. El motor captura geometría de base, fuentes y ajustes y prepara SVGs e imágenes antes de reemplazar la escena al abrir. Los mapas se reconstituyen sin depender de las URLs de carga originales. La importación agrega una identidad nueva para evitar sobreescrituras. Una plantilla crea una copia profunda independiente. Ver PROJECTS.md.

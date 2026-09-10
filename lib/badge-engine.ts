@@ -1,3 +1,4 @@
+import type {SceneSnapshot} from './projects';
 import {MaterialMaps,type MapKind,type MapSettings} from './material-maps';
 import {MotionController,recordVideo} from './motion-controller';
 import type {MotionOptions} from './animation';
@@ -16,6 +17,7 @@ export type { BadgePick } from './interaction';
 export type { ReliefLayer } from './relief';
 export interface BadgeSettings {faceTextureStrength:number;frameMetal:'gold'|'silver'|'black';frameSurface:Surface;frameRoughness:number;frameTextureStrength:number;surface:Surface;faceSurface:Surface;textureStrength:number;faceRoughness:number;motionBlur:number;curvature:number;relief:number;metal:'gold'|'silver'|'black';thickness:number;rim:number;roughness:number;face:string;scale:number;x:number;y:number;rotation:number;light:number;title:string;number:string}
 export class BadgeEngine {
+  private baseSVG:string|null=null;private designSVG:string|null=null;
   private maps=new MaterialMaps();
   private playback!:MotionController;
   private recording:AbortController|null=null;
@@ -50,7 +52,7 @@ export class BadgeEngine {
   }
   async init(){const response=await fetch('/escudo.svg');if(!response.ok)throw Error('SVG missing');const svg=await response.text();if(this.disposed)return;
     const parsed=new SVGLoader().parse(svg);this.points=parsed.paths[1].subPaths[0].getPoints(32).map(p=>new THREE.Vector2((p.x-1314)/3139*4,(1569.5-p.y)/3139*4));
-    this.bocaPoints=this.points.map(p=>p.clone());
+    this.baseSVG=svg;this.bocaPoints=this.points.map(p=>p.clone());
     const room=studioEnvironment();const pmrem=new THREE.PMREMGenerator(this.renderer);this.env=pmrem.fromScene(room,.035);this.scene.environment=this.env.texture;disposeEnvironmentScene(room);pmrem.dispose();this.animate();
   }
   private animate=()=>{if(this.disposed)return;const now=performance.now(),dt=Math.max(1/240,Math.min(.1,(now-this.lastFrameTime)/1000)),automatic=!!this.cameraTween;this.lastFrameTime=now;this.previousCamera.copy(this.camera.position);if(this.cameraTween){const t=this.cameraTween,k=Math.min(1,(performance.now()-t.start)/450),ease=1-Math.pow(1-k,3);this.camera.position.lerpVectors(t.from,t.to,ease);this.controls.target.lerpVectors(t.targetFrom,t.targetTo,ease);if(k===1)this.cameraTween=null;}if(!this.playback.tick(now))this.controls.update();const delta=this.camera.position.clone().sub(this.previousCamera);const right=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(this.camera.matrixWorld,1);const strength=automatic?0:Math.min(.05,Math.max(0,this.settings?.motionBlur||0));const blur=new THREE.Vector2(delta.dot(right),delta.dot(up)).multiplyScalar(strength*.3/(dt*60));blur.clampLength(0,strength*.03);if(!this.exporting)this.motion.render(this.renderer,this.scene,this.camera,blur);this.raf=requestAnimationFrame(this.animate);};
@@ -96,14 +98,26 @@ export class BadgeEngine {
     if(this.image){const factor=Math.min(820/this.image.naturalWidth,820/this.image.naturalHeight);ctx.drawImage(this.image,-this.image.naturalWidth*factor/2,-this.image.naturalHeight*factor/2,this.image.naturalWidth*factor,this.image.naturalHeight*factor);}
     else if(!this.parts.length){ctx.textAlign='center';ctx.fillStyle='#f3ce79';ctx.font='600 40px sans-serif';ctx.fillText(s.title,0,-210);ctx.font='900 290px sans-serif';ctx.fillText(s.number,0,60);ctx.fillRect(-180,115,360,3);ctx.font='500 23px sans-serif';ctx.fillText('LA BOMBONERA',0,165);ctx.font='400 18px sans-serif';ctx.fillText('BUENOS AIRES · 1905',0,206);}ctx.restore();this.texture.needsUpdate=true;
   }
-  setBaseSVG(svg:string){const points=parseBaseSVG(svg);this.points=points;this.select(null);this.geometryKey='';if(this.settings)this.update(this.settings);}
-  resetBase(){this.points=this.bocaPoints.map(p=>p.clone());this.select(null);this.geometryKey='';if(this.settings)this.update(this.settings);}
+  setBaseSVG(svg:string){const points=parseBaseSVG(svg);this.baseSVG=svg;this.points=points;this.select(null);this.geometryKey='';if(this.settings)this.update(this.settings);}
+  resetBase(){this.baseSVG=null;this.points=this.bocaPoints.map(p=>p.clone());this.select(null);this.geometryKey='';if(this.settings)this.update(this.settings);}
   async setImage(file:File){const url=URL.createObjectURL(file);try{const img=new Image();img.src=url;await img.decode();if(img.naturalWidth*img.naturalHeight>40_000_000)throw Error('Image too large');this.clearRelief();this.image=img;this.geometryKey='';if(this.settings)this.update(this.settings);}finally{URL.revokeObjectURL(url);}}
   clearImage(){this.clearRelief();this.image=null;this.geometryKey='';if(this.settings)this.update(this.settings);}
-  private clearRelief(){this.maps.clearLayers();this.select(null);for(const p of this.parts)p.geometry.dispose();this.parts=[];for(const m of this.reliefMaterials.values())m.dispose();this.reliefMaterials.clear();this.layers=[];}
-  setSVG(svg:string){const parsed=parseRelief(svg);this.clearRelief();this.image=null;this.parts=parsed.parts;this.layers=parsed.layers;for(const l of this.layers){const material=new THREE.MeshStandardMaterial({color:l.color,metalness:l.metallic?1:.1,roughness:l.roughness});this.surfaces.apply(material,l.surface,l.textureStrength);this.reliefMaterials.set(l.id,material);}this.geometryKey='';if(this.settings)this.update(this.settings);return this.layers.map(l=>({...l}));}
+  private clearRelief(){this.designSVG=null;this.maps.clearLayers();this.select(null);for(const p of this.parts)p.geometry.dispose();this.parts=[];for(const m of this.reliefMaterials.values())m.dispose();this.reliefMaterials.clear();this.layers=[];}
+  setSVG(svg:string){const parsed=parseRelief(svg);this.clearRelief();this.designSVG=svg;this.image=null;this.parts=parsed.parts;this.layers=parsed.layers;for(const l of this.layers){const material=new THREE.MeshStandardMaterial({color:l.color,metalness:l.metallic?1:.1,roughness:l.roughness});this.surfaces.apply(material,l.surface,l.textureStrength);this.reliefMaterials.set(l.id,material);}this.geometryKey='';if(this.settings)this.update(this.settings);return this.layers.map(l=>({...l}));}
   setLayer(id:string,changes:Partial<ReliefLayer>){const layer=this.layers.find(l=>l.id===id),m=this.reliefMaterials.get(id);if(!layer||!m)return;Object.assign(layer,changes);m.color.set(layer.color);m.metalness=layer.metallic?1:.1;m.roughness=layer.roughness;this.surfaces.apply(m,layer.surface,layer.textureStrength);this.maps.apply(id,m);if(changes.height!==undefined&&this.settings)this.build(this.settings);}
 
+  snapshot():SceneSnapshot{if(!this.settings)throw Error('El visor todavía está cargando.');this.stopMotion();this.cameraTween=null;let raster:string|null=null;if(this.image){const c=document.createElement('canvas');c.width=this.image.naturalWidth;c.height=this.image.naturalHeight;c.getContext('2d')!.drawImage(this.image,0,0);raster=c.toDataURL('image/png');}return {basePoints:this.points.map(p=>[p.x,p.y]),baseSVG:this.baseSVG,designSVG:this.designSVG,raster,settings:{...this.settings},layers:this.layers.map(l=>({...l,color:'#'+new THREE.Color(l.color).getHexString()})),maps:this.maps.snapshot(),camera:{position:this.camera.position.toArray(),target:this.controls.target.toArray()}};}
+  thumbnail(){const visible=this.selectionOutline.visible;try{this.selectionOutline.visible=false;this.renderer.render(this.scene,this.camera);const c=document.createElement('canvas');c.width=360;c.height=280;const ctx=c.getContext('2d')!;ctx.fillStyle='#292925';ctx.fillRect(0,0,360,280);const src=this.renderer.domElement,scale=Math.min(360/src.width,280/src.height);ctx.drawImage(src,(360-src.width*scale)/2,(280-src.height*scale)/2,src.width*scale,src.height*scale);return c.toDataURL('image/jpeg',.8);}finally{this.selectionOutline.visible=visible;}}
+  async restoreSnapshot(s:SceneSnapshot){
+    const parsed=s.designSVG?parseRelief(s.designSVG):{parts:[],layers:[]};const maps=new MaterialMaps();let img:HTMLImageElement|null=null;
+    try{if(parsed.layers.length!==s.layers.length||parsed.layers.some(l=>!s.layers.some(saved=>saved.id===l.id)))throw Error('Los grupos no coinciden con el SVG del proyecto.');
+      if(s.raster){img=new Image();img.src=s.raster;await img.decode();if(img.naturalWidth*img.naturalHeight>40_000_000)throw Error('La imagen del proyecto es demasiado grande.');}
+      for(const [id,m] of Object.entries(s.maps)){await maps.load(id,m.images);maps.configure(id,m.settings);}
+    }catch(error){maps.dispose();parsed.parts.forEach(p=>p.geometry.dispose());throw error;}
+    this.stopMotion();this.clearRelief();this.maps.dispose();this.maps=maps;this.baseSVG=s.baseSVG;this.designSVG=s.designSVG;this.points=s.basePoints.map(p=>new THREE.Vector2(p[0],p[1]));this.image=img;this.parts=parsed.parts;this.layers=s.layers.map(l=>({...l}));
+    for(const l of this.layers){const m=new THREE.MeshStandardMaterial();this.reliefMaterials.set(l.id,m);this.setLayer(l.id,{});}
+    this.geometryKey='';this.hasFramed=true;this.update(s.settings);await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));this.cameraTween=null;const damping=this.controls.enableDamping;this.controls.enableDamping=false;this.controls.update();this.camera.position.fromArray(s.camera.position);this.controls.target.fromArray(s.camera.target);this.controls.update();this.controls.enableDamping=damping;this.renderer.render(this.scene,this.camera);
+  }
   async loadMaps(id:string,files:Partial<Record<MapKind,File|string>>){const applied=await this.maps.load(id,files);if(applied)this.refreshMaps(id);}
   configureMaps(id:string,patch:Partial<MapSettings>){this.maps.configure(id,patch);this.refreshMaps(id);}
   clearMaps(id:string){this.maps.clear(id);this.refreshMaps(id);}

@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {parseProject,serializeProject,copyProject} from '../lib/projects.ts';
+const image='data:image/png;base64,aGVsbG8=';
+const p={format:'badge-studio',version:1,id:'original',name:'Bronce',system:'Temporada',kind:'template',sourceTemplate:null,updatedAt:new Date().toISOString(),thumbnail:image,labels:{base:'Base',design:''},motion:{preset:'sway',duration:6,loop:true,background:'#121212'},scene:{basePoints:[[0,1],[1,0],[0,-1]],baseSVG:null,designSVG:null,raster:null,layers:[],maps:{},camera:{position:[0,0,8],target:[0,0,0]},settings:{faceTextureStrength:.5,frameMetal:'gold',frameSurface:'brushed',frameRoughness:.16,frameTextureStrength:.5,surface:'grain',faceSurface:'grain',textureStrength:.5,faceRoughness:.32,motionBlur:.02,curvature:.18,relief:.045,metal:'gold',thickness:.16,rim:.08,roughness:.16,face:'#142c59',scale:1,x:0,y:0,rotation:0,light:1,title:'TEST',number:'12'}}};
+const restored=parseProject(serializeProject(p));assert.deepEqual(restored.scene.settings,p.scene.settings);assert.deepEqual(restored.motion,p.motion);
+const variant=copyProject(restored,'piece');variant.scene.settings.face='#ffffff';assert.equal(restored.scene.settings.face,'#142c59');assert.notEqual(variant.id,restored.id);assert.equal(variant.sourceTemplate,'original');assert.equal(variant.kind,'piece');
+const reject=change=>{const q=structuredClone(p);change(q);assert.throws(()=>parseProject(JSON.stringify(q)));};
+reject(q=>q.version=2);reject(q=>q.scene.settings.scale=0);reject(q=>q.scene.camera.position=[0,0,0]);reject(q=>q.scene.raster='https://example.com/remote.png');reject(q=>q.scene.basePoints=[[0,0],[0,1],[0,2]]);reject(q=>q.scene.maps.unknown={settings:{},images:{}});reject(q=>{q.scene.designSVG='<svg/>';q.scene.raster=image;});
+const injected=structuredClone(p);injected.scene.settings.unknown='discard';assert.equal(parseProject(JSON.stringify(injected)).scene.settings.unknown,undefined);
+assert.throws(()=>parseProject('{'));console.log('Editable project roundtrip, independent variants and incompatible/untrusted input rejection passed.');

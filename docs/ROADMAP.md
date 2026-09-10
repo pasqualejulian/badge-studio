@@ -26,9 +26,12 @@ El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación
 ## Edición confiable: backlog transversal
 
 - [ ] QA visual del canvas, selección y exportaciones en escritorio y móvil.
-- [ ] Guardar/abrir proyecto completo, incluyendo SVGs, imágenes y cámara.
+- [x] Guardar/abrir proyecto completo, incluyendo SVGs, imágenes, mapas y cámara. Biblioteca local, piezas y plantillas. Ver [PROJECTS.md](PROJECTS.md).
 - [ ] Deshacer/rehacer y restablecer por propiedad o grupo.
-- [ ] Presets guardables y versionados, exportación/importación JSON.
+- [x] Plantillas guardables, variantes independientes y exportación/importación .badge con formato versionado.
+- [ ] Historial de versiones por pieza, migraciones futuras del formato y presets de material aislados.
+- [ ] Herencia entre plantilla y variantes, parámetros compartidos y generación por lote de una colección.
+- [ ] Sincronización entre dispositivos y copias de seguridad automáticas.
 - [ ] Ajustar la transición de foco y su intensidad con pruebas de uso, sin perder el encuadre global.
 - [ ] Hover, selección de pieza individual, multiselección y agrupación manual.
 - [ ] Manipuladores sobre el canvas para posición, escala y rotación del diseño.

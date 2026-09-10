@@ -37,7 +37,7 @@ El menú flotante es el modo inicial. Tiene una zona propia al lado del canvas, 
 
 ## Límites de esta POC
 
-- Los cambios viven en la sesión y se pierden al recargar. No hay guardado de proyectos, presets propios guardables, historial ni deshacer.
+- El guardado es manual en Mis badges y vive en este navegador. Las ediciones sin guardar se pierden al recargar. No hay sincronización, historial ni deshacer. Exportar .badge permite conservar una copia fuera del navegador.
 - La base SVG usa el contorno cerrado más grande. No interpreta perforaciones internas, múltiples chapas ni contornos abiertos. Conviene usar una silueta simple, centrada y sin efectos.
 - Un SVG de ilustración admite hasta 160 trazados, 4000 segmentos y 500 KB. Texto, máscaras, filtros, degradados e imágenes incrustadas requieren simplificación o rasterización.
 - La selección de la ilustración edita un grupo, no cada estrella o trazo individual. El ejemplo tiene cinco grupos y 26 piezas.
@@ -82,3 +82,7 @@ Seleccioná una pieza para abrir **Materiales y mapas**: seis presets CC0, carga
 La edición móvil usa una [capa translúcida con controles inferiores](docs/INTERFACE.md), vista despejada del objeto y distribución lateral en horizontal. En escritorio, el inspector separa Pieza y Texturas.
 
 La dirección visual usa grafito cálido y acentos champagne. La biblioteca muestra chapas renderizadas con sus materiales, y la escena usa softboxes para definir los reflejos. Detalle y relieve y la carga de mapas propios se despliegan cuando hacen falta.
+
+### Piezas, plantillas y sistemas
+
+**Mis badges** permite guardar la pieza completa, abrirla, duplicarla, renombrarla y eliminarla. Una plantilla crea variantes independientes con la misma base y materiales. El campo sistema/colección y la búsqueda ayudan a organizar familias. Los archivos `.badge` incluyen SVGs, imágenes, mapas, alturas por grupo, cámara y movimiento. Se pueden importar en otro navegador o equipo. No hay herencia de cambios entre variantes ni guardado automático. [Formato, almacenamiento y límites](docs/PROJECTS.md).
