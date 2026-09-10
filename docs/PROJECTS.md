@@ -56,3 +56,9 @@ La base IndexedDB se actualiza a versión 2 con un almacén collections. La migr
 Los .badge siguen exportando piezas individuales. Al importar se usa el destino elegido en Guardar en, no el ID de carpeta de otro navegador. No se exporta todavía una colección completa. El almacenamiento sigue siendo local al navegador y al dominio.
 
 Verificación: migración sin pérdida de escenas, persistencia de carpetas vacías, copias independientes, conservación del template al eliminar el original, renombrado, movimientos y rechazo atómico de destinos inexistentes. No se realizó QA visual/táctil de esta iteración.
+
+## Corrección de navegación de biblioteca
+
+El modal usa un contenedor de scroll de altura definida, separado del fieldset que deshabilita acciones durante el guardado. Nueva colección abre un formulario dedicado con nombre y plantilla requeridos. Al entrar se enfoca el nombre. Tras crear se muestra la carpeta, y Agregar pieza lleva la confirmación a la vista.
+
+Verificado en navegador con viewports de 1200×800 y 390×700: scroll con rueda, creación desde una plantilla, guardado de pieza y recuperación tras recargar. El almacenamiento sigue siendo local al navegador y dominio.
