@@ -21,7 +21,7 @@ Priorizar el objeto y la experimentación visual. Abrir sobre el canvas, tocar l
 
 ## Prioridad elegida: texturas y movimiento/video
 
-El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación en [NEXT-ITERATION.md](NEXT-ITERATION.md). Todo sigue pendiente hasta su implementación.
+El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación en [NEXT-ITERATION.md](NEXT-ITERATION.md). Primera implementación disponible, con límites y verificaciones en TEXTURES.md y VIDEO.md.
 
 ## Edición confiable: backlog transversal
 
@@ -36,8 +36,8 @@ El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación
 
 ## Texturas y materiales
 
-- [ ] Subir texturas propias: color, normales y rugosidad.
-- [ ] Escala, repetición, rotación y orientación por material.
+- [x] Subir texturas propias: color, normales y rugosidad.
+- [x] Escala, repetición, rotación y orientación por material.
 - [ ] Mapas compartidos como preset reutilizable.
 - [ ] Metal arenado, rayado, pátina, oxidación y esmalte irregular o cuarteado.
 - [ ] Control de desgaste por bordes y zonas, no sólo patrón uniforme.
@@ -58,7 +58,10 @@ El usuario priorizó los puntos 4 y 5. Alcance, bibliotecas, orden y aceptación
 - [ ] Opciones de simplificación para ilustraciones densas y control de detalle.
 - [ ] Reverso del badge con otro diseño, fecha o inscripción.
 
-## Movimiento y video (priorizado para la próxima iteración)
+## Movimiento y video
+
+- [x] Giro 360°, balanceo, duración, pausa y bucle de preview.
+- [x] Exportación en tiempo real, fondo sólido y formato detectado, progreso y cancelación. Ver [VIDEO.md](VIDEO.md).
 
 - [ ] Presets: giro 360°, balanceo, entrada de logro y acercamiento de detalle.
 - [ ] Duración, velocidad, easing, pausa y bucle.

@@ -37,7 +37,7 @@ El menú flotante es el modo inicial. Tiene una zona propia al lado del canvas, 
 
 ## Límites de esta POC
 
-- Los cambios viven en la sesión y se pierden al recargar. No hay guardado de proyectos, presets, historial ni deshacer.
+- Los cambios viven en la sesión y se pierden al recargar. No hay guardado de proyectos, presets propios guardables, historial ni deshacer.
 - La base SVG usa el contorno cerrado más grande. No interpreta perforaciones internas, múltiples chapas ni contornos abiertos. Conviene usar una silueta simple, centrada y sin efectos.
 - Un SVG de ilustración admite hasta 160 trazados, 4000 segmentos y 500 KB. Texto, máscaras, filtros, degradados e imágenes incrustadas requieren simplificación o rasterización.
 - La selección de la ilustración edita un grupo, no cada estrella o trazo individual. El ejemplo tiene cinco grupos y 26 piezas.
@@ -45,7 +45,7 @@ El menú flotante es el modo inicial. Tiene una zona propia al lado del canvas, 
 - El relieve no se recorta automáticamente al marco. Al cambiar de base, ampliar o mover el diseño, revisar que siga dentro de la chapa. Las alturas pueden ocultar otras piezas.
 - Las texturas simulan microdetalle mediante mapas normales y de rugosidad. No deforman físicamente la malla. Puede haber costuras entre proyecciones laterales.
 - La impresión se compone a 1024 × 1024. El PNG de salida tiene 2048 × 2048, sin aumentar el detalle original de la impresión.
-- El desenfoque es una aproximación de pantalla, no una simulación de obturador. No se graban videos todavía. Los PNG son nítidos.
+- El desenfoque es una aproximación de pantalla, no una simulación de obturador. El video se graba nítido en tiempo real y con fondo sólido. Los PNG son nítidos.
 - Un visor externo puede iluminar el GLB de otra manera. No se exportan las luces de estudio ni la interfaz de edición.
 
 ## Desarrollo y verificación
@@ -73,4 +73,8 @@ El roadmap está únicamente en el repositorio, no en la interfaz del editor.
 
 En menú flotante, **Base** cambia el SVG y la geometría, **Diseño completo** carga la ilustración y ajusta escala, posición y rotación global, y **Acabado y movimiento** edita materiales y desenfoque. Los sliders admiten arrastre y teclado. Desenfoque: 0–0,05, inicial 0,02. El encuadre automático no aplica desenfoque.
 
-Próxima prioridad: [texturas propias y movimiento/video](docs/NEXT-ITERATION.md), con alcance propuesto, bibliotecas CC0 y criterios de aceptación.
+Registro de esta iteración: [texturas propias y movimiento/video](docs/NEXT-ITERATION.md), con alcance original y pendientes.
+
+### Materiales propios y video
+
+Seleccioná una pieza para abrir **Materiales y mapas**: seis presets CC0, carga de color/normal/rugosidad y controles de repetición, orientación e intensidad. En **Acabado y movimiento** podés reproducir un giro o balanceo y exportar un ciclo a video. [Texturas](docs/TEXTURES.md) · [Video y límites](docs/VIDEO.md).

@@ -1,0 +1,18 @@
+'use client';
+import {useState} from 'react';
+import {Button} from '@/components/ui/button';
+import {defaultMapSettings,type MapSettings,type MapKind} from '@/lib/material-maps';
+import type {BadgeEngine} from '@/lib/badge-engine';
+export interface MaterialUI extends MapSettings{label:string;files:Partial<Record<MapKind,string>>}
+export const emptyMaterial:MaterialUI={...defaultMapSettings,label:'Sin mapas externos',files:{}};
+const gallery=[['metal_plate','Chapa rayada'],['metal_plate_02','Chapa irregular'],['blue_metal_plate','Metal pintado'],['green_metal_rust','Metal envejecido'],['grey_plaster','Grano mineral'],['painted_plaster_wall','Pintura irregular']];
+export function MaterialControls({id,engine,value,onChange}:{id:string;engine:BadgeEngine|null;value:MaterialUI;onChange:(v:MaterialUI)=>void}){
+ const [busy,setBusy]=useState(false),[error,setError]=useState('');
+ const change=(patch:Partial<MaterialUI>)=>{const next={...value,...patch};onChange(next);engine?.configureMaps(id,next);};
+ async function load(files:Partial<Record<MapKind,File|string>>,label:string){if(!engine)return;setBusy(true);setError('');try{await engine.loadMaps(id,files);onChange({...value,label,files:{...value.files,...Object.fromEntries(Object.entries(files).map(([k,v])=>[k,typeof v==='string'?'Galería':v.name]))}});}catch(e){setError(e instanceof Error?e.message:'No pudimos cargar el material.');}finally{setBusy(false);}}
+ return <section className="material-library"><h3>Materiales y mapas</h3><p className="control-hint">{value.label} · conservá tu color o activá el del material.</p><fieldset disabled={busy}><div className="material-gallery">{gallery.map(([key,name])=><button key={key} type="button" onClick={()=>load({color:`/materials/${key}/color.jpg`,normal:`/materials/${key}/normal.jpg`,roughness:`/materials/${key}/roughness.jpg`},name)}><img src={`/materials/${key}/color.jpg`} alt="" loading="lazy"/><span>{name}</span></button>)}</div><a className="material-credit" href="https://polyhaven.com/license" target="_blank" rel="noreferrer">Texturas CC0 · Poly Haven</a>
+ <div className="map-uploads">{(['color','normal','roughness'] as MapKind[]).map((kind,i)=><label key={kind}>{['Color','Normal · OpenGL','Rugosidad'][i]}<input aria-label={'Cargar mapa '+kind} type="file" accept="image/png,image/jpeg" onChange={e=>{const f=e.target.files?.[0];if(f)void load({[kind]:f},'Material propio');e.target.value='';}}/><small>{value.files[kind]||'Sin archivo'}</small></label>)}</div><p className="control-hint">PNG/JPG · hasta 2K y 8 MB por mapa. Normal agrega microrelieve, no cambia la geometría.</p>
+ <label className="check-control"><input type="checkbox" checked={value.colorEnabled} onChange={e=>change({colorEnabled:e.target.checked})}/>Usar color del material</label>
+ {([{key:'repeat',label:'Repetición',min:.5,max:12,step:.5},{key:'rotation',label:'Orientación',min:-180,max:180,step:1},{key:'normalStrength',label:'Microrelieve',min:0,max:2,step:.05},{key:'roughness',label:'Rugosidad del mapa',min:0,max:1,step:.05}] as const).map(c=><label className="map-range" key={c.key}>{c.label}<output>{value[c.key]}</output><input className="range-input" type="range" aria-label={c.label} min={c.min} max={c.max} step={c.step} value={value[c.key]} onChange={e=>change({[c.key]:e.target.valueAsNumber})}/></label>)}
+ <Button variant="outline" onClick={()=>{engine?.clearMaps(id);onChange({...emptyMaterial});}}>Quitar mapas externos</Button></fieldset>{busy&&<p role="status">Cargando material…</p>}{error&&<p role="alert">{error}</p>}</section>;
+}

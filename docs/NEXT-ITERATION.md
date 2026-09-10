@@ -1,6 +1,6 @@
 # Próxima iteración: texturas y video
 
-Estado: prioridades elegidas por el usuario, pendientes de implementación. Este documento define el alcance propuesto y criterios de aceptación. No describe funciones ya disponibles.
+Estado: primera implementación de A, B y C realizada. El detalle actual y los límites están en TEXTURES.md y VIDEO.md. El alcance original de abajo se conserva como referencia, no todo está resuelto. Pendientes: QA visual completa, hardware móvil real, optimización de mapas/GLB, transparencia y render offline.
 
 ## Decisión y orden
 
@@ -35,7 +35,7 @@ Fuera de esta entrega: desplazamiento geométrico, grabado por altura, desgaste 
 - **Poly Haven**: alternativa para texturas y entornos de iluminación. Los assets son CC0 y se pueden redistribuir. Su contenido web y previews no tienen automáticamente esa misma licencia. [Licencia oficial](https://polyhaven.com/license). [Galería](https://polyhaven.com/textures).
 - Si luego usamos la API de Poly Haven, cumplir sus términos específicos y crédito visible. La licencia del archivo no sustituye las condiciones del servicio. [API oficial](https://polyhaven.com/our-api).
 
-Propuesta: descargar una selección permitida, optimizarla y alojarla con la herramienta. No depender de hotlinks ni copiar una galería entera. Generar nuestras miniaturas desde los materiales. Registrar proveedor, ID, URL original, licencia y transformaciones en un manifiesto por asset. Todavía no se descargaron ni incorporaron texturas externas.
+Propuesta: descargar una selección permitida, optimizarla y alojarla con la herramienta. No depender de hotlinks ni copiar una galería entera. Generar nuestras miniaturas desde los materiales. Registrar proveedor, ID, URL original, licencia y transformaciones en un manifiesto por asset. Actualización: se incorporaron seis materiales de Poly Haven. ambientCG respondió 403 a la descarga probada. El manifiesto registra las fuentes efectivamente incluidas.
 
 ## B. Movimiento reproducible
 

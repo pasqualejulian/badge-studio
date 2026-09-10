@@ -1,0 +1,86 @@
+[
+  {
+    "id": "metal_plate",
+    "name": "Chapa rayada",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/metal_plate",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate/metal_plate_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  },
+  {
+    "id": "metal_plate_02",
+    "name": "Chapa irregular",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/metal_plate_02",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/metal_plate_02/metal_plate_02_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  },
+  {
+    "id": "blue_metal_plate",
+    "name": "Metal pintado",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/blue_metal_plate",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/blue_metal_plate/blue_metal_plate_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  },
+  {
+    "id": "green_metal_rust",
+    "name": "Metal envejecido",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/green_metal_rust",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/green_metal_rust/green_metal_rust_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/green_metal_rust/green_metal_rust_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/green_metal_rust/green_metal_rust_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  },
+  {
+    "id": "grey_plaster",
+    "name": "Grano mineral",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/grey_plaster",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/grey_plaster/grey_plaster_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/grey_plaster/grey_plaster_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/grey_plaster/grey_plaster_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  },
+  {
+    "id": "painted_plaster_wall",
+    "name": "Pintura irregular",
+    "provider": "Poly Haven",
+    "source": "https://polyhaven.com/a/painted_plaster_wall",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://polyhaven.com/license",
+    "maps": {
+      "color.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_diff_1k.jpg",
+      "normal.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_nor_gl_1k.jpg",
+      "roughness.jpg": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/painted_plaster_wall/painted_plaster_wall_rough_1k.jpg"
+    },
+    "processing": "Original 1K JPG. OpenGL normals. Renamed files."
+  }
+]

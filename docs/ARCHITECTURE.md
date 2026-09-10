@@ -2,7 +2,7 @@
 
 ## Flujo actual
 
-SVG de base → contorno normalizado → chapa/marco/esmalte → ilustración plana o piezas SVG → curvatura → materiales/texturas → visor → PNG/GLB.
+SVG de base → contorno normalizado → chapa/marco/esmalte → ilustración plana o piezas SVG → curvatura → materiales/texturas → visor → PNG/GLB/video.
 
 - `app/editor.tsx`: estado de sesión, controles, carga de archivos e inspectores.
 - `lib/badge-engine.ts`: escena Three.js, materiales, transformación de piezas, cámara y exportación.
@@ -24,3 +24,7 @@ Un clic selecciona la pieza visible más cercana. La ilustración se edita por g
 Hoy se exporta GLB con mallas y materiales. Blender puede importarlo para editar luces, cámara y renderizar. El GLB no lleva los controles paramétricos del editor ni reproduce automáticamente su entorno de iluminación.
 
 La evolución sería guardar una configuración versionada y reconstruir la escena mediante Python/bpy. El motor web seguiría resolviendo la interacción inmediata y Blender podría producir el render final. El script inicial de Blender de este experimento vive fuera de este repositorio web y todavía no es un backend integrado.
+
+## Materiales externos y movimiento
+
+`lib/material-maps.ts` administra imágenes y transformaciones por destino, valida cargas y libera recursos. Se aplica después de los materiales procedurales. El color del esmalte se compone con la ilustración en canvas. `lib/animation.ts` define poses por tiempo y detección de formatos. `lib/motion-controller.ts` administra reproducción, pausa y captura con MediaRecorder, restaurando estado al terminar. La galería se sirve localmente desde `public/materials`, con manifiesto CC0.
