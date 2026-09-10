@@ -2,9 +2,9 @@
 
 ## Uso
 
-1. Pulsar **Guardar** en la barra superior o Cmd/Ctrl+S. **Biblioteca** abre las piezas guardadas sin reemplazar la edición actual.
+1. Abrir **Mis badges** desde la barra superior (icono de carpeta en móvil).
 2. Dar un nombre y, opcionalmente, un sistema o colección.
-3. **Guardar pieza** conserva la edición actual. En las siguientes ocasiones, **Guardar** actualiza directamente ese registro y confirma la escritura. El guardado sigue siendo manual.
+3. **Guardar pieza** conserva la edición actual. **Guardar cambios** reemplaza ese registro guardado.
 4. **Guardar como plantilla** crea otro registro. **Crear variante** abre una copia editable de esa plantilla, que debe guardarse para conservarse. Nunca cambia la plantilla original.
 5. Importar/exportar `.badge` permite mover una obra completa. Importar añade un registro nuevo incluso si el archivo ya estaba en la biblioteca. Luego se abre desde su tarjeta.
 
