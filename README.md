@@ -100,3 +100,7 @@ Cada persona guarda sus piezas en el navegador. La biblioteca del dominio anteri
 **Reverso** permite escribir hasta tres líneas, elegir Sans/Clásica/Monoespaciada y ajustar tamaño, intensidad, posición y rotación. Ver reverso / Ver frente gira la cámara. Funciona con bases personalizadas y su curvatura. El texto se recorta al contorno, por lo que puede desaparecer si se mueve fuera de la chapa.
 
 Es una simulación mediante color y normales sobre una superficie trasera transparente, no un recorte geométrico ni un archivo de fabricación. Se incluye en PNG, video, GLB y proyectos `.badge`. Los visores GLB pueden representar transparencias y reflejos de otra manera. Las fuentes genéricas pueden variar entre dispositivos.
+
+### Colecciones
+
+**Mis badges → Plantillas → Crear colección** crea una carpeta basada en una copia de esa plantilla. Dentro, **Agregar pieza** abre una nueva variante y **Guardar en [colección]** la conserva allí. Las piezas se pueden duplicar o mover a otra carpeta. Las etiquetas antiguas se recuperan como carpetas al abrir la biblioteca. [Funcionamiento y límites](docs/PROJECTS.md#colecciones-como-carpetas).

@@ -1,0 +1,18 @@
+import 'fake-indexeddb/auto';
+import assert from 'node:assert/strict';
+import {readLibrary,projectStore,collectionStore,collectionPiece} from '../lib/project-storage.ts';
+const template={id:'t1',name:'Metal',kind:'template',system:'',sourceTemplate:null,scene:{settings:{face:'#123456'}},updatedAt:'2026-01-01',thumbnail:'preview'};
+const oldPiece={...structuredClone(template),id:'old',name:'Primer logro',kind:'piece',system:'Temporada',sourceTemplate:'t1'};
+const orphan={...structuredClone(oldPiece),id:'orphan',system:'Antigua',sourceTemplate:'missing'};
+const legacy=await new Promise((resolve,reject)=>{const r=indexedDB.open('badge-studio-projects',1);r.onupgradeneeded=()=>r.result.createObjectStore('projects',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
+await new Promise((resolve,reject)=>{const tx=legacy.transaction('projects','readwrite');for(const p of [template,oldPiece,orphan])tx.objectStore('projects').put(p);tx.oncomplete=resolve;tx.onerror=reject;});legacy.close();
+let library=await readLibrary();assert.equal(library.projects.length,3);assert.equal(library.collections.length,2);const migrated=library.collections.find(c=>c.name==='Temporada');assert.equal(library.projects.find(p=>p.id==='old').collectionId,migrated.id);assert.equal(migrated.template.id,'t1');assert.equal(library.collections.find(c=>c.name==='Antigua').template,null);assert.deepEqual(library.projects.find(p=>p.id==='old').scene,oldPiece.scene);
+assert.equal((await readLibrary()).collections.length,2,'migration must not repeat');
+const c=await collectionStore.create('Logros 2026',template);const a=collectionPiece(c),b=collectionPiece(c);a.scene.settings.face='#ffffff';assert.equal(b.scene.settings.face,'#123456');assert.equal(c.template.scene.settings.face,'#123456');assert.notEqual(a.id,b.id);await projectStore.put(a);await projectStore.put(b);
+await projectStore.remove(template.id);library=await readLibrary();const frozen=library.collections.find(x=>x.id===c.id);assert.equal(collectionPiece(frozen).scene.settings.face,'#123456','deleting source template must preserve collection baseline');
+await collectionStore.rename(c.id,'Logros');library=await readLibrary();assert.equal(library.projects.find(p=>p.id===a.id).system,'Logros');assert.equal(library.projects.find(p=>p.id===a.id).collectionId,c.id);
+await collectionStore.move(a.id,migrated.id);await collectionStore.move(b.id,null);library=await readLibrary();assert.equal(library.projects.find(p=>p.id===a.id).collectionId,migrated.id);assert.equal(library.projects.find(p=>p.id===a.id).scene.settings.face,'#ffffff');assert.equal(library.projects.find(p=>p.id===b.id).collectionId,null);
+await assert.rejects(()=>collectionStore.move(a.id,'missing'));assert.equal((await readLibrary()).projects.find(p=>p.id===a.id).collectionId,migrated.id,'invalid move must be atomic');
+await assert.rejects(()=>projectStore.put({...a,collectionId:'missing'}));assert.equal((await readLibrary()).projects.find(p=>p.id===a.id).collectionId,migrated.id);
+const recovered=library.collections.find(c=>c.name==='Antigua');await collectionStore.setTemplate(recovered.id,template);assert.equal(collectionPiece((await readLibrary()).collections.find(c=>c.id===recovered.id)).sourceTemplate,'t1');
+console.log('Legacy migration, folder persistence, independent pieces, frozen templates, moves, rename and atomic failure passed.');
